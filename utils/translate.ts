@@ -3,7 +3,6 @@ import cheerio from "cheerio";
 import { replaceBoth, LangCode } from "./language";
 import { Configuration, OpenAIApi } from "openai";
 
-const { Configuration, OpenAIApi } = require("openai");
 const configuration = new Configuration({
     apiKey: "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"
 });
