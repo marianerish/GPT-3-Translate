@@ -2,6 +2,13 @@ import UserAgent from "user-agents";
 import cheerio from "cheerio";
 import { replaceBoth, LangCode } from "./language";
 
+const { Configuration, OpenAIApi } = require("openai");
+const configuration = new Configuration({
+    apiKey: "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"
+});
+
+const openai = new OpenAIApi(configuration);
+
 export async function googleScrape(
     source: LangCode,
     target: LangCode,
@@ -12,14 +19,21 @@ export async function googleScrape(
     errorMsg: string
 }> {
     const parsed = replaceBoth("mapping", { source, target });
-    const res = await fetch(
-        `https://translate.google.com/m?sl=${parsed.source}&tl=${parsed.target}&q=${encodeURIComponent(query)}`,
-        {
-            headers: {
-                "User-Agent": new UserAgent().toString()
-            }
-        }
-    ).catch(
+    // const res = await fetch(
+    //     `https://translate.google.com/m?sl=${parsed.source}&tl=${parsed.target}&q=${encodeURIComponent(query)}`,
+    //     {
+    //         headers: {
+    //             "User-Agent": new UserAgent().toString()
+    //         }
+    //     }
+    // ).catch(
+    //     () => null
+    // );
+
+    const res = await openai.createCompletion("text-curie-001", {
+        prompt: query,
+        max_tokens: 1500
+    }).catch(
         () => null
     );
 
@@ -28,8 +42,9 @@ export async function googleScrape(
             errorMsg: "An error occurred while retrieving the translation"
         }
 
-    const html = await res.text();
-    const translationRes = cheerio.load(html)(".result-container").text().trim();
+    // const html = await res.text();
+    // const translationRes = cheerio.load(html)(".result-container").text().trim();
+    const translationRes = res.choices.text;
 
     return translationRes
         ? {
