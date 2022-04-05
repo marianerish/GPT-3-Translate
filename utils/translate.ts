@@ -1,6 +1,7 @@
 import UserAgent from "user-agents";
 import cheerio from "cheerio";
 import { replaceBoth, LangCode } from "./language";
+import { Configuration, OpenAIApi } from "openai";
 
 const { Configuration, OpenAIApi } = require("openai");
 const configuration = new Configuration({
